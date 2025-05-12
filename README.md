@@ -4,7 +4,7 @@
 
 ## Looking for Bitcoin Core images?
 
-These images are meant to be drop-in replacements for the `bitcoin/bitcoin` (Bitcoin Core) images. If you're looking for those, go to [willcl-ark/bitcoin-core-docker](https://github.com/willcl-ark/bitcoin-core-docker).
+The `bitcoinknots/bitcoin` (Bitcoin Knots) images here are drop-in replacements for the `bitcoin/bitcoin` (Bitcoin Core) images. If you're looking for actual Bitcoin Core images, go to [willcl-ark/bitcoin-core-docker](https://github.com/willcl-ark/bitcoin-core-docker).
 
 ## About the images
 
@@ -30,8 +30,10 @@ These images are meant to be drop-in replacements for the `bitcoin/bitcoin` (Bit
 
 ## Tags
 
-- `28.1`, `28`, `latest` ([28.1/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/28.1/Dockerfile)) [**multi-platform**]
-- `28.1-alpine`, `28-alpine`, `alpine` ([28.1/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/28.1/alpine/Dockerfile))
+- `28.1.knots20250305`, `28.1`, `28`, `latest` ([28.1.knots20250305/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/28.1.knots20250305/Dockerfile)) [**multi-platform**]
+- `28.1.knots20250305-alpine`, `28.1-alpine`, `28-alpine`, `alpine` ([28.1.knots20250305/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/28.1.knots20250305/alpine/Dockerfile))
+- `27.1.knots20240801`, `27.1`, `27` ([27.1.knots20240801/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/27.1.knots20240801/Dockerfile)) [**multi-platform**]
+- `27.1.knots20240801-alpine`, `27.1-alpine`, `27-alpine` ([27.1.knots20240801/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/27.1.knots20240801/alpine/Dockerfile))
 
 ### Picking the right tag
 
@@ -49,15 +51,15 @@ These tags refer to the latest major version, and the latest minor and patch of 
 
 These tags refer to a specific version of Bitcoin Knots.
 
-- `bitcoinknots/bitcoin:<version>`: Release binaries of a specific release directly from bitcoinknots.org (e.g. `27.1` or `26`).
-- `bitcoinknots/bitcoin:<version>-alpine`: Source-built binaries of a specific release of Bitcoin Knots (e.g. `27.1` or `26`) using the Alpine Linux distribution.
+- `bitcoinknots/bitcoin:<version>`: Release binaries of a specific release directly from bitcoinknots.org (e.g. `28.1` or `27`).
+- `bitcoinknots/bitcoin:<version>-alpine`: Source-built binaries of a specific release of Bitcoin Knots (e.g. `28.1` or `27`) using the Alpine Linux distribution.
 
 #### Nightly master build
 
-This tag refers to a nightly build of https://github.com/bitcoinknots/bitcoin master branch using Alpine Linux.
+These tags refer to nightly builds of the https://github.com/bitcoinknots/bitcoin default branch, both Debian-based and Alpine-based.
 
-- `bitcoinknots/bitcoin:master`: Source-built binaries on Debian Linux, compiled nightly using master branch pulled from https://github.com/bitcoinknots/bitcoin.
-- `bitcoinknots/bitcoin:master-alpine`: Source-built binaries on Alpine Linux, compiled nightly using master branch pulled from https://github.com/bitcoinknots/bitcoin.
+- `bitcoinknots/bitcoin:master`: Source-built binaries on Debian Linux, compiled nightly using default branch pulled from https://github.com/bitcoinknots/bitcoin.
+- `bitcoinknots/bitcoin:master-alpine`: Source-built binaries on Alpine Linux, compiled nightly using default branch pulled from https://github.com/bitcoinknots/bitcoin.
 
 ## Usage
 

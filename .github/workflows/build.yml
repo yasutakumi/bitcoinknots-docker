@@ -57,6 +57,7 @@ jobs:
 
           # Split the extracted version into major, minor and patch variables
           IFS='.' read -r MAJOR MINOR PATCH <<< "$BITCOIN_VERSION"
+          PATCH_NUM=$(sed 's/[^[:digit:]]//g' <<< "$PATCH")
 
           # Output the extracted version parts
           echo "Major Version: $MAJOR"
@@ -65,41 +66,29 @@ jobs:
           echo "RC: $RC"
           echo "Latest major version: $LATEST_BITCOIN_MAJOR_VERSION"
 
-          # Add primary tags
           if ! $ALPINE; then
-              # Non-alpine
-              if [[ -n "$RC" ]]; then
-                  if [[ -n "$PATCH" && "$PATCH" -ne 0 ]]; then
-                      TAGS+=("$REPO:${MAJOR}.${MINOR}.${PATCH}${RC}")
-                  else
-                      TAGS+=("$REPO:${MAJOR}.${MINOR}${RC}")
-                  fi
-              elif [[ -n "$PATCH" && "$PATCH" -ne 0 ]]; then
-                  TAGS+=("$REPO:${MAJOR}.${MINOR}.${PATCH}")
-                  TAGS+=("$REPO:${MAJOR}")
+              TAG_SUFFIX=""
+          else
+              TAG_SUFFIX=-alpine
+          fi
+
+          # Add primary tags
+          if [[ -n "$RC" ]]; then
+              if [[ -n "$PATCH" && "$PATCH_NUM" -ne 0 ]]; then
+                  TAGS+=("$REPO:${MAJOR}.${MINOR}.${PATCH}${RC}${TAG_SUFFIX}")
               else
-                  TAGS+=("$REPO:${MAJOR}.${MINOR}")
-                  TAGS+=("$REPO:${MAJOR}")
+                  TAGS+=("$REPO:${MAJOR}.${MINOR}${RC}${TAG_SUFFIX}")
               fi
           else
-              # Alpine
-              if [[ -n "$RC" ]]; then
-                  if [[ -n "$PATCH" && "$PATCH" -ne 0 ]]; then
-                      TAGS+=("$REPO:${MAJOR}.${MINOR}.${PATCH}${RC}-alpine")
-                  else
-                      TAGS+=("$REPO:${MAJOR}.${MINOR}${RC}-alpine")
-                  fi
-              elif [[ -n "$PATCH" && "$PATCH" -ne 0 ]]; then
-                  TAGS+=("$REPO:${MAJOR}.${MINOR}.${PATCH}-alpine")
-                  TAGS+=("$REPO:${MAJOR}-alpine")
-              else
-                  TAGS+=("$REPO:${MAJOR}.${MINOR}-alpine")
-                  TAGS+=("$REPO:${MAJOR}-alpine")
+              if [[ -n "$PATCH" && "$PATCH_NUM" -ne 0 ]]; then
+                  TAGS+=("$REPO:${MAJOR}.${MINOR}.${PATCH}${TAG_SUFFIX}")
               fi
+              TAGS+=("$REPO:${MAJOR}.${MINOR}${TAG_SUFFIX}")
+              TAGS+=("$REPO:${MAJOR}${TAG_SUFFIX}")
           fi
 
           # Create the stripped version including patch if it exists
-          if [[ -n "$PATCH" && "$PATCH" -ne 0 ]]; then
+          if [[ -n "$PATCH" && "$PATCH_NUM" -ne 0 ]]; then
               STRIPPED_VERSION="$MAJOR.$MINOR.$PATCH"
           else
               STRIPPED_VERSION="$MAJOR.$MINOR"
@@ -110,16 +99,15 @@ jobs:
           LATEST_MAJOR=$(echo "$LATEST_BITCOIN_MAJOR_VERSION" | awk -F. '{print $1}')
           LATEST_MINOR=$(echo "$LATEST_BITCOIN_MAJOR_VERSION" | awk -F. '{print $2}')
           LATEST_PATCH=$(echo "$LATEST_BITCOIN_MAJOR_VERSION" | awk -F. '{print $3}')
+          LATEST_PATCH_NUM=$(sed 's/[^[:digit:]]//g' <<< "$LATEST_PATCH")
 
-          if [[ -z "$RC" && ("$MAJOR" -gt "$LATEST_MAJOR" || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -gt "$LATEST_MINOR") || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -eq "$LATEST_MINOR" && ("${PATCH:-0}" = "${LATEST_PATCH:-0}" || "${PATCH:-0}" > "${LATEST_PATCH:-0}"))) ]]; then
+          if [[ -z "$RC" && ("$MAJOR" -gt "$LATEST_MAJOR" || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -gt "$LATEST_MINOR") || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -eq "$LATEST_MINOR" && "${PATCH_NUM:-0}" -ge "${LATEST_PATCH_NUM:-0}")) ]]; then
               if ! $ALPINE; then
-                echo "Version ${MAJOR}.${MINOR}.${PATCH} >= ${LATEST_BITCOIN_MAJOR_VERSION}, tagging as 'latest'"
-                TAGS+=("$REPO:latest")
-                TAGS+=("$REPO:${MAJOR}")
+                  echo "Version ${MAJOR}.${MINOR}.${PATCH} >= ${LATEST_BITCOIN_MAJOR_VERSION}, tagging as 'latest'"
+                  TAGS+=("$REPO:latest")
               else
-                echo "Version ${MAJOR}.${MINOR}.${PATCH} >= ${LATEST_BITCOIN_MAJOR_VERSION}, tagging as 'alpine'"
-                TAGS+=("$REPO:alpine")
-                TAGS+=("$REPO:${MAJOR}-alpine")
+                  echo "Version ${MAJOR}.${MINOR}.${PATCH} >= ${LATEST_BITCOIN_MAJOR_VERSION}, tagging as 'alpine'"
+                  TAGS+=("$REPO:alpine")
               fi
           fi
 
