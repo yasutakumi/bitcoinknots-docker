@@ -1,18 +1,20 @@
 FROM debian:bookworm-slim AS build
 
-LABEL maintainer.0="Will Clark (@willcl-ark)"
+LABEL maintainer.0="Yasu Takumi (@yasutakumi)"
 
 RUN apt-get update -y \
   && apt-get install -y \
+    autoconf \
+    automake \
     build-essential \
     ca-certificates \
     ccache \
     clang-16 \
-    cmake \
     git \
     libboost-dev \
     libevent-dev \
     libsqlite3-dev \
+    libtool \
     libzmq3-dev \
     pkg-config \
     python3 \
@@ -22,11 +24,11 @@ RUN apt-get update -y \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ENV BITCOIN_PREFIX=/opt/bitcoin
-ARG COMMIT=master
+ARG COMMIT=28.x-knots
 
 WORKDIR /src
 
-RUN git clone -b "$COMMIT" --single-branch --depth 1 "https://github.com/bitcoin/bitcoin.git" && \
+RUN git clone -b "$COMMIT" --single-branch --depth 1 "https://github.com/bitcoinknots/bitcoin.git" && \
     cd bitcoin && \
     git fetch origin "$COMMIT" && \
     git checkout "$COMMIT" && \
@@ -34,19 +36,24 @@ RUN git clone -b "$COMMIT" --single-branch --depth 1 "https://github.com/bitcoin
 
 WORKDIR /src/bitcoin
 
-RUN set -ex \
-  && cmake -B build \
-    -DBUILD_TESTS=OFF \
-    -DBUILD_TX=ON \
-    -DBUILD_UTIL=OFF \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    -DCMAKE_CXX_COMPILER=clang++-16 \
-    -DCMAKE_C_COMPILER=clang-16 \
-    -DCMAKE_INSTALL_PREFIX:PATH="${BITCOIN_PREFIX}" \
-    -DWITH_CCACHE=ON \
-  && cmake --build build -j$(nproc) \
-  && strip build/bin/bitcoin-cli build/bin/bitcoin-tx build/bin/bitcoind \
-  && cmake --install build
+RUN ./autogen.sh
+RUN ./configure \
+  --prefix=${BITCOIN_PREFIX} \
+  --mandir=/usr/share/man \
+  --disable-tests \
+  --disable-bench \
+  --disable-fuzz-binary \
+  --disable-ccache \
+  --with-gui=no \
+  --with-utils \
+  --without-libs \
+  --with-sqlite=yes \
+  --with-daemon
+RUN make -j`nproc` -C src bitcoind bitcoin-cli bitcoin-tx
+RUN make -j`nproc` install
+RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-cli
+RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-tx
+RUN strip ${BITCOIN_PREFIX}/bin/bitcoind
 
 # Second stage
 FROM debian:bookworm-slim
@@ -72,5 +79,5 @@ VOLUME ["/home/bitcoin/.bitcoin"]
 EXPOSE 8332 8333 18332 18333 18443 18444 38333 38332
 
 ENTRYPOINT ["/entrypoint.sh"]
-RUN bitcoind -version | grep "Bitcoin Core daemon version"
+RUN bitcoind -version | grep "Bitcoin Knots daemon version"
 CMD ["bitcoind"]

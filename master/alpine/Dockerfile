@@ -1,13 +1,14 @@
-# Build stage for Bitcoin Core
+# Build stage for Bitcoin Knots
 FROM alpine:3.21 AS build
 
 RUN apk --no-cache add \
+    autoconf \
+    automake \
     boost-dev \
     build-base \
     ccache \
     chrpath \
     clang18 \
-    cmake \
     file \
     gnupg \
     git \
@@ -19,10 +20,10 @@ RUN apk --no-cache add \
     zeromq-dev
 
 ENV BITCOIN_PREFIX=/opt/bitcoin
-ARG COMMIT=master
+ARG COMMIT=28.x-knots
 
 WORKDIR /src
-RUN git clone -b "$COMMIT" --single-branch --depth 1 "https://github.com/bitcoin/bitcoin.git" && \
+RUN git clone -b "$COMMIT" --single-branch --depth 1 "https://github.com/bitcoinknots/bitcoin.git" && \
     cd bitcoin && \
     git fetch origin "$COMMIT" && \
     git checkout "$COMMIT" && \
@@ -30,18 +31,24 @@ RUN git clone -b "$COMMIT" --single-branch --depth 1 "https://github.com/bitcoin
 
 WORKDIR /src/bitcoin
 
-RUN cmake -B build \
-    -DBUILD_TESTS=OFF \
-    -DBUILD_TX=ON \
-    -DBUILD_UTIL=OFF \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    -DCMAKE_CXX_COMPILER=clang++-18 \
-    -DCMAKE_C_COMPILER=clang-18 \
-    -DCMAKE_INSTALL_PREFIX:PATH="${BITCOIN_PREFIX}" \
-    -DWITH_CCACHE=ON && \
-    cmake --build build -j$(nproc) && \
-    strip build/bin/bitcoin-cli build/bin/bitcoin-tx build/bin/bitcoind && \
-    cmake --install build
+RUN ./autogen.sh
+RUN ./configure \
+  --prefix=${BITCOIN_PREFIX} \
+  --mandir=/usr/share/man \
+  --disable-tests \
+  --disable-bench \
+  --disable-fuzz-binary \
+  --disable-ccache \
+  --with-gui=no \
+  --with-utils \
+  --without-libs \
+  --with-sqlite=yes \
+  --with-daemon
+RUN make -j`nproc` -C src bitcoind bitcoin-cli bitcoin-tx
+RUN make -j`nproc` install
+RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-cli
+RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-tx
+RUN strip ${BITCOIN_PREFIX}/bin/bitcoind
 
 # Copy build artefacts
 FROM alpine:3.21
@@ -49,7 +56,7 @@ FROM alpine:3.21
 ARG UID=100
 ARG GID=101
 
-LABEL maintainer.0="Will Clark (@willcl-ark)"
+LABEL maintainer.0="Yasu Takumi (@yasutakumi)"
 
 RUN addgroup --gid ${GID} --system bitcoin && \
     adduser --uid ${UID} --system bitcoin --ingroup bitcoin

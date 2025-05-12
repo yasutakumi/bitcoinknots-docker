@@ -4,9 +4,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '27.1/**'
-      - '28.1/**'
-      - '29.0/**'
+      - '28.1.knots20250305/**'
+      - '27.1.knots20240801/**'
 
 jobs:
   build:
@@ -15,8 +14,10 @@ jobs:
       max-parallel: ${{ github.event_name == 'pull_request' && 8 || 1 }}
       matrix:
         version:
-          - '29.0/alpine'
-          - '29.0'
+          - '28.1.knots20250305'
+          - '28.1.knots20250305/alpine'
+          - '27.1.knots20240801'
+          - '27.1.knots20240801/alpine'
       fail-fast: true
     steps:
       - name: Checkout
@@ -51,7 +52,7 @@ jobs:
           LATEST_BITCOIN_MAJOR_VERSION=$(find . -maxdepth 1 -type d -not -path '*/\.*' -not -path '*/deprecated' -not -name '*rc*' -not -name 'master' | sort -V | tail -n 1 | cut -c 3- )
           PLATFORMS="linux/amd64"
           PUSH=false
-          REPO=bitcoin/bitcoin
+          REPO=bitcoinknots/bitcoin
           TAGS=()
 
           # Split the extracted version into major, minor and patch variables
@@ -110,7 +111,7 @@ jobs:
           LATEST_MINOR=$(echo "$LATEST_BITCOIN_MAJOR_VERSION" | awk -F. '{print $2}')
           LATEST_PATCH=$(echo "$LATEST_BITCOIN_MAJOR_VERSION" | awk -F. '{print $3}')
 
-          if [[ -z "$RC" && ("$MAJOR" -gt "$LATEST_MAJOR" || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -gt "$LATEST_MINOR") || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -eq "$LATEST_MINOR" && "${PATCH:-0}" -ge "${LATEST_PATCH:-0}")) ]]; then
+          if [[ -z "$RC" && ("$MAJOR" -gt "$LATEST_MAJOR" || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -gt "$LATEST_MINOR") || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -eq "$LATEST_MINOR" && ("${PATCH:-0}" = "${LATEST_PATCH:-0}" || "${PATCH:-0}" > "${LATEST_PATCH:-0}"))) ]]; then
               if ! $ALPINE; then
                 echo "Version ${MAJOR}.${MINOR}.${PATCH} >= ${LATEST_BITCOIN_MAJOR_VERSION}, tagging as 'latest'"
                 TAGS+=("$REPO:latest")
@@ -132,7 +133,7 @@ jobs:
 
           echo "build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" | tee -a $GITHUB_OUTPUT
           echo "docker_platforms=${PLATFORMS}" | tee -a $GITHUB_OUTPUT
-          echo "docker_username=bitcoin" | tee -a $GITHUB_OUTPUT
+          echo "docker_username=bitcoinknots" | tee -a $GITHUB_OUTPUT
           echo "push=${PUSH}" | tee -a $GITHUB_OUTPUT
           echo "tags=${TAGS[@]}" | tee -a $GITHUB_OUTPUT
 
