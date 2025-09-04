@@ -1,30 +1,29 @@
-FROM debian:bookworm-slim AS build
+FROM debian:trixie-slim AS build
 
 LABEL maintainer.0="Yasu Takumi (@yasutakumi)"
 
-RUN apt-get update -y \
-  && apt-get install -y \
-    autoconf \
-    automake \
+RUN apt-get update --yes \
+  && apt-get install --yes --no-install-recommends \
     build-essential \
     ca-certificates \
+    capnproto \
     ccache \
-    clang-16 \
+    clang-19 \
+    cmake \
     git \
     libboost-dev \
+    libcapnp-dev \
     libevent-dev \
     libsqlite3-dev \
-    libtool \
     libzmq3-dev \
     pkg-config \
     python3 \
     systemtap-sdt-dev \
-    --no-install-recommends \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ENV BITCOIN_PREFIX=/opt/bitcoin
-ARG COMMIT=28.x-knots
+ARG COMMIT=29.x-knots
 
 WORKDIR /src
 
@@ -36,27 +35,22 @@ RUN git clone -b "$COMMIT" --single-branch --depth 1 "https://github.com/bitcoin
 
 WORKDIR /src/bitcoin
 
-RUN ./autogen.sh
-RUN ./configure \
-  --prefix=${BITCOIN_PREFIX} \
-  --mandir=/usr/share/man \
-  --disable-tests \
-  --disable-bench \
-  --disable-fuzz-binary \
-  --disable-ccache \
-  --with-gui=no \
-  --with-utils \
-  --without-libs \
-  --with-sqlite=yes \
-  --with-daemon
-RUN make -j`nproc` -C src bitcoind bitcoin-cli bitcoin-tx
-RUN make -j`nproc` install
-RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-cli
-RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-tx
-RUN strip ${BITCOIN_PREFIX}/bin/bitcoind
+RUN set -ex \
+  && cmake -B build \
+    -DBUILD_TESTS=OFF \
+    -DBUILD_TX=ON \
+    -DBUILD_UTIL=OFF \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCMAKE_CXX_COMPILER=clang++-19 \
+    -DCMAKE_C_COMPILER=clang-19 \
+    -DCMAKE_INSTALL_PREFIX:PATH="${BITCOIN_PREFIX}" \
+    -DWITH_CCACHE=ON \
+  && cmake --build build -j$(nproc) \
+  && strip build/bin/bitcoin-cli build/bin/bitcoin-tx build/bin/bitcoind \
+  && cmake --install build
 
 # Second stage
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 ARG UID=101
 ARG GID=101
@@ -65,8 +59,15 @@ ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 
 RUN groupadd --gid ${GID} bitcoin \
   && useradd --create-home --no-log-init -u ${UID} -g ${GID} bitcoin \
-  && apt-get update -y \
-  && apt-get install -y gosu libevent-dev libboost-dev libsqlite3-dev libzmq3-dev systemtap-sdt-dev --no-install-recommends \
+  && apt-get update --yes \
+  && apt-get install --yes --no-install-recommends \
+    capnproto \
+    gosu \
+    libboost-dev \
+    libevent-dev \
+    libsqlite3-dev \
+    libzmq3-dev \
+    systemtap-sdt-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
