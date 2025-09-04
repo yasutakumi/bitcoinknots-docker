@@ -2,17 +2,15 @@
 
 [![bitcoinknots/bitcoin][docker-pulls-image]][docker-hub-url] [![bitcoinknots/bitcoin][docker-stars-image]][docker-hub-url] [![bitcoinknots/bitcoin][docker-size-image]][docker-hub-url]
 
-## Looking for Bitcoin Core images?
-
-The `bitcoinknots/bitcoin` (Bitcoin Knots) images here are drop-in replacements for the `bitcoin/bitcoin` (Bitcoin Core) images. If you're looking for actual Bitcoin Core images, go to [willcl-ark/bitcoin-core-docker](https://github.com/willcl-ark/bitcoin-core-docker).
-
 ## About the images
 
 > [!IMPORTANT]
 > These are **unofficial** Bitcoin Knots images, not endorsed or associated with the Bitcoin Knots project on GitHub: github.com/bitcoinknots/bitcoin
 
+The `bitcoinknots/bitcoin` (Bitcoin Knots) images here are drop-in replacements for the `bitcoin/bitcoin` (Bitcoin Core) images. If you're looking for Bitcoin Core images, go to [willcl-ark/bitcoin-core-docker](https://github.com/willcl-ark/bitcoin-core-docker).
+
 - The images are aimed at testing environments (e.g. for downstream or bitcoin-adjacent projects), as it is non-trivial to verify the authenticity of the Bitcoin Knots binaries inside.
-  - When using Bitcoin Knots software for non-testing purposes you should always ensure that you have either: i) built it from source yourself, or ii) verfied your binary download.
+  - When using Bitcoin Knots software for non-testing purposes you should always ensure that you have either: i) built it from source yourself, or ii) verified your binary download.
 - The images are built using CI workflows found in this repo: https://github.com/yasutakumi/bitcoinknots-docker
 - The images are built with support for the following platforms:
   | Image                                   | Platforms                              |
