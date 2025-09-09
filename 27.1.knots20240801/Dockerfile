@@ -15,6 +15,7 @@ ENV VERIFY_SCRIPT_URL="https://raw.githubusercontent.com/bitcoinknots/bitcoin/v$
 ENV TMPDIR="/tmp/bitcoin_verify_binaries"
 
 COPY verify-27.1.py ./
+COPY builder-keys builder-keys
 RUN set -ex \
   && if echo $BITCOIN_VERSION | grep -q "rc" ; then \
        VERIFY_VERSION=$(echo $BITCOIN_VERSION | sed 's/\(.*\)rc\([0-9]*\)/\1-rc\2/'); \
@@ -27,6 +28,7 @@ RUN set -ex \
   && if [ "${TARGETPLATFORM}" = "linux/arm/v7" ]; then export TARGETPLATFORM=arm-linux-gnueabihf; fi \
   && git clone ${SIGS_REPO_URL} ${SIGS_CLONE_DIR} \
   && gpg --import "${SIGS_CLONE_DIR}"/builder-keys/* \
+  && gpg --import builder-keys/* \
   && ./verify-${BITCOIN_VERSION%.*}.py \
     --min-good-sigs 6 pub "${VERIFY_VERSION}-linux" \
   && tar -xzf "${TMPDIR}.${VERIFY_VERSION}-linux/bitcoin-${BITCOIN_VERSION}-${TARGETPLATFORM}.tar.gz" -C /opt \

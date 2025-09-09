@@ -14,6 +14,7 @@ ENV SIGS_CLONE_DIR="guix.sigs"
 ENV TMPDIR="/tmp/bitcoin_verify_binaries"
 
 COPY verify-${BITCOIN_VERSION%.*}.py .
+COPY builder-keys builder-keys
 
 RUN set -ex \
   && if echo $BITCOIN_VERSION | grep -q "rc" ; then \
@@ -27,6 +28,7 @@ RUN set -ex \
   && if [ "${TARGETPLATFORM}" = "linux/arm/v7" ]; then export TARGETPLATFORM=arm-linux-gnueabihf; fi \
   && git clone ${SIGS_REPO_URL} ${SIGS_CLONE_DIR} \
   && gpg --import "${SIGS_CLONE_DIR}"/builder-keys/* \
+  && gpg --import builder-keys/* \
   && ./verify-${BITCOIN_VERSION%.*}.py \
     --min-good-sigs 6 pub "${VERIFY_VERSION}-linux" \
   && tar -xzf "${TMPDIR}.${VERIFY_VERSION}-linux/bitcoin-${BITCOIN_VERSION}-${TARGETPLATFORM}.tar.gz" -C /opt \
