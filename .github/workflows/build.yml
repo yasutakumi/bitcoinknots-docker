@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - '29.2.knots20251010/**'
       - '29.1.knots20250903/**'
       - '28.1.knots20250305/**'
       - '27.1.knots20240801/**'
@@ -15,6 +16,8 @@ jobs:
       max-parallel: ${{ github.event_name == 'pull_request' && 8 || 1 }}
       matrix:
         version:
+          - '29.2.knots20251010'
+          - '29.2.knots20251010/alpine'
           - '29.1.knots20250903'
           - '29.1.knots20250903/alpine'
           - '28.1.knots20250305'
