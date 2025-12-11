@@ -9,6 +9,7 @@ on:
       - '29.1.knots20250903/**'
       - '29.2.knots20251010/**'
       - '29.2.knots20251110/**'
+      - '29.2.knots20251110+bip110-v0.1rc1/**'
 
 jobs:
   build:
@@ -17,8 +18,8 @@ jobs:
       max-parallel: ${{ github.event_name == 'pull_request' && 8 || 1 }}
       matrix:
         version:
-          - '29.2.knots20251110/alpine'
-          - '29.2.knots20251110'
+          - '29.2.knots20251110+bip110-v0.1rc1/alpine'
+          - '29.2.knots20251110+bip110-v0.1rc1'
       fail-fast: true
     steps:
       - name: Checkout
@@ -76,13 +77,13 @@ jobs:
           # Add primary tags
           if [[ -n "$RC" ]]; then
               if [[ -n "$PATCH" && "$PATCH_NUM" -ne 0 ]]; then
-                  TAGS+=("$REPO:${MAJOR}.${MINOR}.${PATCH}${RC}${TAG_SUFFIX}")
+                  TAGS+=("$REPO:${MAJOR}.${MINOR}.${PATCH//+/-}${RC}${TAG_SUFFIX}")
               else
                   TAGS+=("$REPO:${MAJOR}.${MINOR}${RC}${TAG_SUFFIX}")
               fi
           else
               if [[ -n "$PATCH" && "$PATCH_NUM" -ne 0 ]]; then
-                  TAGS+=("$REPO:${MAJOR}.${MINOR}.${PATCH}${TAG_SUFFIX}")
+                  TAGS+=("$REPO:${MAJOR}.${MINOR}.${PATCH//+/-}${TAG_SUFFIX}")
               fi
               TAGS+=("$REPO:${MAJOR}.${MINOR}${TAG_SUFFIX}")
               TAGS+=("$REPO:${MAJOR}${TAG_SUFFIX}")
