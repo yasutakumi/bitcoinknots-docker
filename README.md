@@ -1,6 +1,6 @@
 # bitcoinknots/bitcoin
 
-[![bitcoinknots/bitcoin][docker-pulls-image]][docker-hub-url] [![bitcoinknots/bitcoin][docker-stars-image]][docker-hub-url] [![bitcoinknots/bitcoin][docker-size-image]][docker-hub-url]
+[![bitcoinknots/bitcoin][docker-pulls]][docker-hub-url] [![bitcoinknots/bitcoin][docker-stars]][docker-hub-url] [![bitcoinknots/bitcoin][image-size-alpine]][image-size-alpine-url] [![bitcoinknots/bitcoin][image-size-debian]][image-size-debian-url] [![bitcoinknots/bitcoin][image-size-master-alpine]][image-size-master-alpine-url]
 
 ## About the images
 
@@ -266,6 +266,11 @@ curl --data-binary '{"jsonrpc":"1.0","id":"1","method":"getnetworkinfo","params"
 [License information](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/LICENSE) for the [yasutakumi/bitcoinknots-docker][docker-hub-url] docker project.
 
 [docker-hub-url]: https://hub.docker.com/r/bitcoinknots/bitcoin
-[docker-pulls-image]: https://img.shields.io/docker/pulls/bitcoinknots/bitcoin.svg?style=flat-square
-[docker-size-image]: https://img.shields.io/docker/image-size/bitcoinknots/bitcoin?style=flat-square
-[docker-stars-image]: https://img.shields.io/docker/stars/bitcoinknots/bitcoin.svg?style=flat-square
+[docker-pulls]: https://img.shields.io/docker/pulls/bitcoinknots/bitcoin
+[docker-stars]: https://img.shields.io/docker/stars/bitcoinknots/bitcoin
+[image-size-alpine]: https://img.shields.io/docker/image-size/bitcoinknots/bitcoin/alpine?label=alpine
+[image-size-alpine-url]: https://hub.docker.com/layers/bitcoinknots/bitcoin/alpine/
+[image-size-debian]: https://img.shields.io/docker/image-size/bitcoinknots/bitcoin/latest?label=debian
+[image-size-debian-url]: https://hub.docker.com/layers/bitcoinknots/bitcoin/latest/
+[image-size-master-alpine]: https://img.shields.io/docker/image-size/bitcoinknots/bitcoin/master-alpine?label=master-alpine
+[image-size-master-alpine-url]: https://hub.docker.com/layers/bitcoinknots/bitcoin/master-alpine/
