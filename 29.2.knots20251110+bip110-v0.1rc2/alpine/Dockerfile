@@ -17,7 +17,7 @@ RUN apk --no-cache add \
     sqlite-dev \
     zeromq-dev
 
-ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc1
+ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc2
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV BITCOIN_SOURCE_DIR=/bitcoin/src
 ENV BITCOIN_SOURCE=https://github.com/dathonohm/bitcoin/releases/download/v${BITCOIN_VERSION}
@@ -34,7 +34,7 @@ RUN set -ex \
   && wget ${BITCOIN_SOURCE}/bitcoin-${BITCOIN_VERSION}.tar.gz \
   && git clone ${SIGS_REPO_URL} ${SIGS_CLONE_DIR} \
   && gpg --import "${SIGS_CLONE_DIR}"/builder-keys/* \
-  && ./verify.py --min-good-sigs 1 bin SHA256SUMS \
+  && ./verify.py --min-good-sigs 5 bin SHA256SUMS \
     "bitcoin-${BITCOIN_VERSION}.tar.gz" \
   && mkdir -p ${BITCOIN_SOURCE_DIR} \
   && tar -xzf "bitcoin-${BITCOIN_VERSION}.tar.gz" -C ${BITCOIN_SOURCE_DIR} \
@@ -73,7 +73,7 @@ RUN apk --no-cache add \
   su-exec
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
-ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc1
+ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc2
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV PATH=/opt/bin:$PATH
 
