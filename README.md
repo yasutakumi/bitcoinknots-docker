@@ -46,10 +46,10 @@ The `bitcoinknots/bitcoin` (Bitcoin Knots) images here are drop-in replacements 
 ## Release Candidates
 
 > [!IMPORTANT]
-> This is a release candidate of a **fork** of Bitcoin Knots implementing BIP-110; see https://github.com/bitcoin/bips/pull/2017 and https://github.com/dathonohm/bitcoin/releases/tag/v29.2.knots20251110%2Bbip110-v0.1rc2 for more information. It is attested by a smaller quorum of code signers than official Bitcoin Knots releases, and you might not trust the signers. Take extra caution!
+> This is a release candidate of a **fork** of Bitcoin Knots implementing BIP-110; see https://github.com/bitcoin/bips/pull/2017 and https://github.com/dathonohm/bitcoin/releases/tag/v29.2.knots20251110%2Bbip110-v0.1rc3 for more information. It is attested by a smaller quorum of code signers than official Bitcoin Knots releases, and you might not trust the signers. Take extra caution!
 
-- `29.2.knots20251110-bip110-v0.1rc2` ([29.2.knots20251110+bip110-v0.1rc2/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.2.knots20251110+bip110-v0.1rc2/Dockerfile)) [**multi-platform**]
-- `29.2.knots20251110-bip110-v0.1rc2-alpine` ([29.2.knots20251110+bip110-v0.1rc2/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.2.knots20251110+bip110-v0.1rc2/alpine/Dockerfile))
+- `29.2.knots20251110-bip110-v0.1rc3` ([29.2.knots20251110+bip110-v0.1rc3/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.2.knots20251110+bip110-v0.1rc3/Dockerfile)) [**multi-platform**]
+- `29.2.knots20251110-bip110-v0.1rc3-alpine` ([29.2.knots20251110+bip110-v0.1rc3/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.2.knots20251110+bip110-v0.1rc3/alpine/Dockerfile))
 
 ### Picking the right tag
 
