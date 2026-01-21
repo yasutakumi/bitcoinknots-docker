@@ -17,7 +17,7 @@ RUN apk --no-cache add \
     sqlite-dev \
     zeromq-dev
 
-ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc2
+ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc3
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV BITCOIN_SOURCE_DIR=/bitcoin/src
 ENV BITCOIN_SOURCE=https://github.com/dathonohm/bitcoin/releases/download/v${BITCOIN_VERSION}
@@ -73,7 +73,7 @@ RUN apk --no-cache add \
   su-exec
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
-ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc2
+ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc3
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV PATH=/opt/bin:$PATH
 

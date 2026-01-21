@@ -8,7 +8,7 @@ RUN apt-get update -y \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ARG TARGETPLATFORM
-ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc2
+ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc3
 ENV BITCOIN_SOURCE=https://github.com/dathonohm/bitcoin/releases/download/v${BITCOIN_VERSION}
 ENV SIGS_REPO_URL="https://github.com/dathonohm/guix.sigs"
 ENV SIGS_CLONE_DIR="guix.sigs"
@@ -40,7 +40,7 @@ ARG UID=101
 ARG GID=101
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
-ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc2
+ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1rc3
 ENV PATH=/opt/bitcoin-${BITCOIN_VERSION}/bin:$PATH
 
 RUN groupadd --gid ${GID} bitcoin \

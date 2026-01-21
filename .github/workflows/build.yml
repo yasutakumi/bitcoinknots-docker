@@ -9,7 +9,7 @@ on:
       - '29.1.knots20250903/**'
       - '29.2.knots20251010/**'
       - '29.2.knots20251110/**'
-      - '29.2.knots20251110+bip110-v0.1rc2/**'
+      - '29.2.knots20251110+bip110-v0.1rc3/**'
 
 jobs:
   build:
@@ -18,8 +18,8 @@ jobs:
       max-parallel: ${{ github.event_name == 'pull_request' && 8 || 1 }}
       matrix:
         version:
-          - '29.2.knots20251110+bip110-v0.1rc2/alpine'
-          - '29.2.knots20251110+bip110-v0.1rc2'
+          - '29.2.knots20251110+bip110-v0.1rc3/alpine'
+          - '29.2.knots20251110+bip110-v0.1rc3'
       fail-fast: true
     steps:
       - name: Checkout
