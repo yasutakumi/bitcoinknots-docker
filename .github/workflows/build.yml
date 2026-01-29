@@ -51,6 +51,13 @@ jobs:
               RC=""
           fi
 
+          # Check if the version is a fork.
+          if [[ $BITCOIN_VERSION == *+* ]]; then
+              FORK=true
+          else
+              FORK=false
+          fi
+
           LATEST_BITCOIN_MAJOR_VERSION=$(find . -maxdepth 1 -type d -not -path '*/\.*' -not -path '*/deprecated' -not -name '*rc*' -not -name 'master' | sort -V | tail -n 1 | cut -c 3- )
           PLATFORMS="linux/amd64"
           PUSH=false
@@ -75,7 +82,7 @@ jobs:
           fi
 
           # Add primary tags
-          if [[ -n "$RC" ]]; then
+          if $FORK || [[ -n "$RC" ]]; then
               if [[ -n "$PATCH" && "$PATCH_NUM" -ne 0 ]]; then
                   TAGS+=("$REPO:${MAJOR}.${MINOR}.${PATCH//+/-}${RC}${TAG_SUFFIX}")
               else
@@ -103,7 +110,7 @@ jobs:
           LATEST_PATCH=$(echo "$LATEST_BITCOIN_MAJOR_VERSION" | awk -F. '{print $3}')
           LATEST_PATCH_NUM=$(sed 's/[^[:digit:]]//g' <<< "$LATEST_PATCH")
 
-          if [[ -z "$RC" && ("$MAJOR" -gt "$LATEST_MAJOR" || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -gt "$LATEST_MINOR") || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -eq "$LATEST_MINOR" && "${PATCH_NUM:-0}" -ge "${LATEST_PATCH_NUM:-0}")) ]]; then
+          if ! $FORK && [[ -z "$RC" && ("$MAJOR" -gt "$LATEST_MAJOR" || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -gt "$LATEST_MINOR") || ("$MAJOR" -eq "$LATEST_MAJOR" && "$MINOR" -eq "$LATEST_MINOR" && "${PATCH_NUM:-0}" -ge "${LATEST_PATCH_NUM:-0}")) ]]; then
               if ! $ALPINE; then
                   echo "Version ${MAJOR}.${MINOR}.${PATCH} >= ${LATEST_BITCOIN_MAJOR_VERSION}, tagging as 'latest'"
                   TAGS+=("$REPO:latest")
