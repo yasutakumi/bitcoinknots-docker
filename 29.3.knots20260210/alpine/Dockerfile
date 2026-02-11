@@ -1,4 +1,4 @@
-# Build stage for Bitcoin Knots
+# Build stage for Bitcoin Core
 FROM alpine:3.23 AS build
 
 RUN apk --no-cache add \
@@ -6,7 +6,7 @@ RUN apk --no-cache add \
     build-base \
     ccache \
     chrpath \
-    clang21 \
+    clang20 \
     cmake \
     file \
     gnupg \
@@ -17,15 +17,15 @@ RUN apk --no-cache add \
     sqlite-dev \
     zeromq-dev
 
-ENV BITCOIN_VERSION=29.2.knots20251110
+ENV BITCOIN_VERSION=29.3.knots20260210
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV BITCOIN_SOURCE_DIR=/bitcoin/src
 ENV SIGS_REPO_URL="https://github.com/bitcoinknots/guix.sigs.git"
 ENV SIGS_CLONE_DIR="guix.sigs"
-ENV VERIFY_SCRIPT_URL="https://raw.githubusercontent.com/bitcoinknots/bitcoin/v${BITCOIN_VERSION}/contrib/verify-binaries/verify.py"
 
 WORKDIR /bitcoin
-COPY verify-${BITCOIN_VERSION%.*}.py .
+
+COPY verify.py ./
 
 RUN set -ex \
   && if echo $BITCOIN_VERSION | grep -q "rc" ; then \
@@ -41,7 +41,7 @@ RUN set -ex \
   && wget ${ADDRESS}/SHA256SUMS.asc \
   && git clone ${SIGS_REPO_URL} ${SIGS_CLONE_DIR} \
   && gpg --import "${SIGS_CLONE_DIR}"/builder-keys/* \
-  && ./verify-${BITCOIN_VERSION%.*}.py bin SHA256SUMS \
+  && ./verify.py --min-good-sigs 4 bin SHA256SUMS \
     "bitcoin-${BITCOIN_VERSION}.tar.gz" \
   && mkdir -p ${BITCOIN_SOURCE_DIR} \
   && tar -xzf "bitcoin-${BITCOIN_VERSION}.tar.gz" -C ${BITCOIN_SOURCE_DIR} \
@@ -54,8 +54,8 @@ RUN cmake -B build \
     -DBUILD_TX=ON \
     -DBUILD_UTIL=OFF \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    -DCMAKE_CXX_COMPILER=clang++-21 \
-    -DCMAKE_C_COMPILER=clang-21 \
+    -DCMAKE_CXX_COMPILER=clang++-20 \
+    -DCMAKE_C_COMPILER=clang-20 \
     -DCMAKE_INSTALL_PREFIX:PATH="${BITCOIN_PREFIX}" \
     -DWITH_CCACHE=ON && \
     cmake --build build -j$(nproc) && \
@@ -80,7 +80,7 @@ RUN apk --no-cache add \
   su-exec
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
-ENV BITCOIN_VERSION=29.2.knots20251110
+ENV BITCOIN_VERSION=29.3.knots20260210
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV PATH=/opt/bin:$PATH
 
