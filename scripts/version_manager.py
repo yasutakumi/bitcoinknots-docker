@@ -378,12 +378,12 @@ class VersionManager:
                 base=v.base, fork=v.fork, major=v.major
             )
 
-            tags = [v.original]
+            tags = [format_tag(v.original)]
             if not v.is_rc and not v.is_fork:
                 if latest_minor is not None and v == latest_minor:
-                    tags.append(f"{v.major}.{v.minor}")
+                    tags.append(format_tag(f"{v.major}.{v.minor}"))
                 if latest_major is not None and v == latest_major:
-                    tags.append(str(v.major))
+                    tags.append(format_tag(v.major))
                 if latest is not None and v == latest:
                     tags.append("latest")
 
@@ -463,6 +463,11 @@ def main():
         manager.deprecate_version(args.version)
     elif args.command == "list":
         manager.list_versions()
+
+
+def format_tag(tag: str | int) -> str:
+    """Format a Docker tag."""
+    return re.sub(r"[^a-zA-Z0-9._-]", "-", str(tag))
 
 
 if __name__ == "__main__":

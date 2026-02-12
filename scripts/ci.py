@@ -224,6 +224,12 @@ def get_matrix(github_ref: str, repo_root: Path, version: str | None = None) -> 
     return {"include": include}
 
 
+def format_tag(repo: str, tag: str) -> str:
+    """Format a Docker tag."""
+    formatted_tag = re.sub(r"[^a-zA-Z0-9._-]", "-", tag)
+    return f"{repo}:{formatted_tag}"
+
+
 def generate_tags(
     version_str: str, alpine: bool, repo_root: Path, *, repo: str
 ) -> list[str]:
@@ -231,17 +237,17 @@ def generate_tags(
 
     Preserves the tag logic from the original build.yml.
     """
-    tags = []
+    tags: list[str] = []
     alpine_suffix = "-alpine" if alpine else ""
 
     if version_str == "master":
-        tags.append(f"{repo}:master{alpine_suffix}")
+        tags.append(format_tag(repo, f"master{alpine_suffix}"))
         return tags
 
     try:
         v = Version(version_str)
     except ValueError:
-        return [f"{repo}:{version_str}{alpine_suffix}"]
+        return [format_tag(repo, f"{version_str}{alpine_suffix}")]
 
     latest = get_latest_version(repo_root, base=v.base, fork=v.fork)
     latest_for_major = get_latest_version(
@@ -274,29 +280,32 @@ def generate_tags(
         )
 
     if rc_tag is not None:
-        tags.append(f"{repo}:{rc_tag}{alpine_suffix}")
+        tags.append(format_tag(repo, f"{rc_tag}{alpine_suffix}"))
     if patch_tag is not None:
-        tags.append(f"{repo}:{patch_tag}{alpine_suffix}")
+        tags.append(format_tag(repo, f"{patch_tag}{alpine_suffix}"))
     if minor_tag is not None and (
         not latest or latest_for_major_minor is None or v >= latest_for_major_minor
     ):
-        tags.append(f"{repo}:{minor_tag}{alpine_suffix}")
+        tags.append(format_tag(repo, f"{minor_tag}{alpine_suffix}"))
     if major_tag is not None and (
         not latest or latest_for_major is None or v >= latest_for_major
     ):
-        tags.append(f"{repo}:{major_tag}{alpine_suffix}")
+        tags.append(format_tag(repo, f"{major_tag}{alpine_suffix}"))
 
     if v.base == "knots" and not v.is_fork and not v.is_rc and latest and v >= latest:
         if not alpine:
             if f"{repo}:latest" not in tags:
-                tags.append(f"{repo}:latest")
-            if f"{repo}:{major_tag}" not in tags:
-                tags.append(f"{repo}:{major_tag}")
+                tags.append(format_tag(repo, "latest"))
+            if major_tag is not None and f"{repo}:{major_tag}" not in tags:
+                tags.append(format_tag(repo, major_tag))
         else:
             if f"{repo}:alpine" not in tags:
-                tags.append(f"{repo}:alpine")
-            if f"{repo}:{major_tag}{alpine_suffix}" not in tags:
-                tags.append(f"{repo}:{major_tag}{alpine_suffix}")
+                tags.append(format_tag(repo, "alpine"))
+            if (
+                major_tag is not None
+                and f"{repo}:{major_tag}{alpine_suffix}" not in tags
+            ):
+                tags.append(format_tag(repo, f"{major_tag}{alpine_suffix}"))
 
     return tags
 
