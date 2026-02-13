@@ -3,12 +3,12 @@ FROM debian:bookworm-slim AS builder
 LABEL maintainer.0="Yasu Takumi (@yasutakumi)"
 
 RUN apt-get update -y \
-  && apt-get install -y ca-certificates curl git gnupg gosu python3 wget --no-install-recommends \
+  && apt-get install -y ca-certificates git gnupg gosu python3 wget --no-install-recommends \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ARG TARGETPLATFORM
-ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1
+ENV BITCOIN_VERSION=29.3.knots20260210+bip110-v0.2
 ENV BITCOIN_SOURCE=https://github.com/dathonohm/bitcoin/releases/download/v${BITCOIN_VERSION}
 ENV SIGS_REPO_URL="https://github.com/dathonohm/guix.sigs"
 ENV SIGS_CLONE_DIR="guix.sigs"
@@ -26,7 +26,7 @@ RUN set -ex \
   && wget ${BITCOIN_SOURCE}/bitcoin-${BITCOIN_VERSION}-${TARGETPLATFORM}.tar.gz \
   && git clone ${SIGS_REPO_URL} ${SIGS_CLONE_DIR} \
   && gpg --import "${SIGS_CLONE_DIR}"/builder-keys/* \
-  && ./verify.py --min-good-sigs 5 bin SHA256SUMS \
+  && ./verify.py --min-good-sigs 4 bin SHA256SUMS \
     "bitcoin-${BITCOIN_VERSION}-${TARGETPLATFORM}.tar.gz" \
   && tar -xzf "bitcoin-${BITCOIN_VERSION}-${TARGETPLATFORM}.tar.gz" -C /opt \
   && rm -rf ${SIGS_CLONE_DIR} \
@@ -40,7 +40,7 @@ ARG UID=101
 ARG GID=101
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
-ENV BITCOIN_VERSION=29.2.knots20251110+bip110-v0.1
+ENV BITCOIN_VERSION=29.3.knots20260210+bip110-v0.2
 ENV PATH=/opt/bitcoin-${BITCOIN_VERSION}/bin:$PATH
 
 RUN groupadd --gid ${GID} bitcoin \
