@@ -39,8 +39,8 @@ The `bitcoinknots/bitcoin` (Bitcoin Knots) images here are drop-in replacements 
 
 ## Alternative Tags
 
-- `29.3.knots20260210-bip110-v0.2` ([29.3.knots20260210+bip110-v0.2/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.3.knots20260210+bip110-v0.2/Dockerfile)) [**multi-platform**]
-- `29.3.knots20260210-bip110-v0.2-alpine` ([29.3.knots20260210+bip110-v0.2/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.3.knots20260210+bip110-v0.2/alpine/Dockerfile))
+- `29.3.knots20260210-bip110-v0.3` ([29.3.knots20260210+bip110-v0.3/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.3.knots20260210+bip110-v0.3/Dockerfile)) [**multi-platform**]
+- `29.3.knots20260210-bip110-v0.3-alpine` ([29.3.knots20260210+bip110-v0.3/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.3.knots20260210+bip110-v0.3/alpine/Dockerfile))
 
 ### Picking the right tag
 
