@@ -28,19 +28,14 @@ The `bitcoinknots/bitcoin` (Bitcoin Knots) images here are drop-in replacements 
 
 ## Tags
 
-- `29.3.knots20260210`, `29.3`, `29`, `latest` ([29.3.knots20260210/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.3.knots20260210/Dockerfile)) [**multi-platform**]
-- `29.3.knots20260210-alpine`, `29.3-alpine`, `29-alpine`, `alpine` ([29.3.knots20260210/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.3.knots20260210/alpine/Dockerfile))
+- `29.3.knots20260508`, `29.3`, `29`, `latest` ([29.3.knots20260508/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.3.knots20260508/Dockerfile)) [**multi-platform**]
+- `29.3.knots20260508-alpine`, `29.3-alpine`, `29-alpine`, `alpine` ([29.3.knots20260508/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.3.knots20260508/alpine/Dockerfile))
 
 - `28.1.knots20250305`, `28.1`, `28` ([28.1.knots20250305/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/28.1.knots20250305/Dockerfile)) [**multi-platform**]
 - `28.1.knots20250305-alpine`, `28.1-alpine`, `28-alpine` ([28.1.knots20250305/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/28.1.knots20250305/alpine/Dockerfile))
 
 - `27.1.knots20240801`, `27.1`, `27` ([27.1.knots20240801/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/27.1.knots20240801/Dockerfile)) [**multi-platform**]
 - `27.1.knots20240801-alpine`, `27.1-alpine`, `27-alpine` ([27.1.knots20240801/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/27.1.knots20240801/alpine/Dockerfile))
-
-## Alternative Tags
-
-- `29.3.knots20260210-bip110-v0.4.1` ([29.3.knots20260210+bip110-v0.4.1/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.3.knots20260210+bip110-v0.4.1/Dockerfile)) [**multi-platform**]
-- `29.3.knots20260210-bip110-v0.4.1-alpine` ([29.3.knots20260210+bip110-v0.4.1/alpine/Dockerfile](https://github.com/yasutakumi/bitcoinknots-docker/blob/master/29.3.knots20260210+bip110-v0.4.1/alpine/Dockerfile))
 
 ### Picking the right tag
 

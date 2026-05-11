@@ -17,7 +17,7 @@ RUN apk --no-cache add \
     sqlite-dev \
     zeromq-dev
 
-ENV BITCOIN_VERSION=29.3.knots20260210
+ENV BITCOIN_VERSION=29.3.knots20260508
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV BITCOIN_SOURCE_DIR=/bitcoin/src
 ENV SIGS_REPO_URL="https://github.com/bitcoinknots/guix.sigs.git"
@@ -57,7 +57,8 @@ RUN cmake -B build \
     -DCMAKE_CXX_COMPILER=clang++-20 \
     -DCMAKE_C_COMPILER=clang-20 \
     -DCMAKE_INSTALL_PREFIX:PATH="${BITCOIN_PREFIX}" \
-    -DWITH_CCACHE=ON && \
+    -DWITH_CCACHE=ON \
+    -DRDTS_CONSENT=RUNTIME_WARN && \
     cmake --build build -j$(nproc) && \
     strip build/bin/bitcoin-cli build/bin/bitcoin-tx build/bin/bitcoind && \
     cmake --install build
@@ -80,7 +81,7 @@ RUN apk --no-cache add \
   su-exec
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
-ENV BITCOIN_VERSION=29.3.knots20260210
+ENV BITCOIN_VERSION=29.3.knots20260508
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV PATH=/opt/bin:$PATH
 
